@@ -74,17 +74,3 @@ Method Unset( cKey ) Class Dictionary
  */
 Method Dispose() Class Dictionary
   Return ::oValue:Clean()
-
-Exemplo de uso do `Dictionary`:
-```
-Function TestDict
-  Local oFruits := <Dictionary>()
-
-  oFruits:Set( "Apple", 4 )
-  oFruits:Set( "Orange", 5 )
-  oFruits:Set( "Watermelon", 1 )
-
-  ? "Let's buy " + oFruits:Get( "Apple" ) + " apples!"
-
-  Return
-```
