@@ -21,7 +21,6 @@
 // SOFTWARE.
 #xtranslate \<<obj>\> => <obj>():New
 #include "protheus.ch"
-
 /**
  * Base class for all collections that hold a value. In AdvPL, a protected
  * member, this is, a member defined in the parent class is not visible by
@@ -32,8 +31,6 @@
 Class Collection
   Data aValue
 EndClass
-
-#include "protheus.ch"
 
 /**
  * A Dictionary has a linear complexity and is an optimized structure with no
@@ -110,7 +107,105 @@ Method Unset( cKey ) Class Dictionary
 Method Dispose() Class Dictionary
   Return ::oValue:Clean()
 
-#include "protheus.ch"
+/**
+ * Algebraic representation of a wrapped value.
+ * @package DataStructures
+ */
+Class Just
+  /**
+   * Holder for the value.
+   */
+  Data xValue
+
+  Method New( xVal ) Constructor
+  Method Bind( bFunc )
+  Method FromJust()
+  Method FromMaybe( xDef )
+  Method IsJust()
+  Method IsNothing()
+  Method Maybe( xDef, bFunc )
+  Method ToList()
+EndClass
+
+/**
+ * Instantiates a Nothing representation.
+ * @constructor
+ * @author Marcelo Camargo
+ * @param xVal :: any
+ * @return Just
+ */
+Method New( xVal ) Class Just
+  ::xValue := xVal
+  Return Self
+
+/**
+ * Equivalent to Haskell's `>>=` operator. Its first argument is a value in
+ * a monadic type, its second argument is a function that maps from the
+ * underlying type of the first argument to another monadic type, and its
+ * results is in that other monadic type.
+ * @param bFunc :: Block
+ * @return Maybe
+ */
+Method Bind( bFunc ) Class Just
+  Return Maybe:New( Eval( bFunc, ::xValue ) )
+
+/**
+ * Extracts the element out of a `Just` and returns an error if its argument
+ * is `Nothing`.
+ * @author Marcelo Camargo
+ * @throws UserException
+ * @return any
+ */
+Method FromJust() Class Just
+  Return ::xValue
+
+/**
+ * Takes a `Maybe` value and a default value. If the `Maybe` is `Nothing`, it
+ * returns the default values; otherwise, it returns the value contained in
+ * the `Maybe`.
+ * @author Marcelo Camargo
+ * @param _ ignore
+ * @return any
+ */
+Method FromMaybe( _ ) Class Just
+  Return ::xValue
+
+/**
+ * Returns true if its argument is of the form `Just _`.
+ * @author Marcelo Camargo
+ * @return Bool
+ */
+Method IsJust() Class Just
+  Return .T.
+
+/**
+ * Returns true if its argument is of the form `Nothing`.
+ * @author Marcelo Camargo
+ * @return Bool
+ */
+Method IsNothing() Class Just
+  Return .F.
+
+/**
+ * Takes a default value, a function and, of course, a `Maybe` value. If the
+ * `Maybe` value is `Nothing`, the function returns the default value.
+ * Otherwise, it applies the function to the value inside the `Just` and
+ * returns the result.
+ * @author Marcelo Camargo
+ * @param _ ignore
+ * @param bFunc :: Block
+ * @return any
+ */
+Method Maybe( _, bFunc ) Class Just
+  Return Eval( bFunc, ::xValue )
+
+/**
+ * Returns an empty list when given `Nothing` or a singleton list when not
+ * given `Nothing`.
+ * @return Array<any>
+ */
+Method ToList() Class Just
+  Return { ::xValue }
 
 /**
  * An optimized structure for linear array access to replace the native array
@@ -215,13 +310,24 @@ Method Index( n ) Class List
   ::oHash:Get( n, @xResult )
   Return xResult
 
-#include "protheus.ch"
-
-// Maybe
+/**
+ * Maybe monad implemenation. Takes a value and is able to return Just _ or
+ * Nothing.
+ * @package DataStructures
+ */
 Class Maybe
   Method New( xVal ) Constructor
 EndClass
 
+/**
+ * Receives a value. If the value is nil, returns Nothing. Otherwise, returns
+ * the value wrapped by a Just container. When it receives an instance of an
+ * object of the same class, returns itself.
+ * @constructor
+ * @author Marcelo Camargo
+ * @param xVal :: any
+ * @return Just _ | Nothing
+ */
 Method New( xVal ) Class Maybe
   Local cType := ValType( xVal )
   Local oRet
@@ -235,7 +341,10 @@ Method New( xVal ) Class Maybe
   EndIf
   Return oRet
 
-// Nothing
+/**
+ * Algebraic representation of Nothing.
+ * @package DataStructures
+ */
 Class Nothing
   Method New() Constructor
   Method Bind( bFunc )
@@ -247,70 +356,84 @@ Class Nothing
   Method ToList()
 EndClass
 
+/**
+ * Instantiates a Nothing representation.
+ * @constructor
+ * @author Marcelo Camargo
+ * @return Nothing
+ */
 Method New() Class Nothing
   Return Self
 
+/**
+ * Equivalent to Haskell's `>>=` operator. Its first argument is a value in
+ * a monadic type, its second argument is a function that maps from the
+ * underlying type of the first argument to another monadic type, and its
+ * results is in that other monadic type.
+ * @param _ ignore
+ * @return Nothing
+ */
 Method Bind( _ ) Class Nothing
   Return Self
 
+/**
+ * Extracts the element out of a `Just` and returns an error if its argument
+ * is `Nothing`.
+ * @author Marcelo Camargo
+ * @throws UserException
+ * @return Nil
+ */
 Method FromJust() Class Nothing
   UserException( "Cannot call FromJust() on Nothing" )
   Return Nil
 
+/**
+ * Takes a `Maybe` value and a default value. If the `Maybe` is `Nothing`, it
+ * returns the default values; otherwise, it returns the value contained in
+ * the `Maybe`.
+ * @author Marcelo Camargo
+ * @param xDef :: any
+ * @return any
+ */
 Method FromMaybe( xDef ) Class Nothing
   Return xDef
 
+/**
+ * Returns true if its argument is of the form `Just _`.
+ * @author Marcelo Camargo
+ * @return Bool
+ */
 Method IsJust() Class Nothing
   Return .F.
 
+/**
+ * Returns true if its argument is of the form `Nothing`.
+ * @author Marcelo Camargo
+ * @return Bool
+ */
 Method IsNothing() Class Nothing
   Return .T.
 
+/**
+ * Takes a default value, a function and, of course, a `Maybe` value. If the
+ * `Maybe` value is `Nothing`, the function returns the default value.
+ * Otherwise, it applies the function to the value inside the `Just` and
+ * returns the result.
+ * @author Marcelo Camargo
+ * @param xDef :: any
+ * @param _ ignore
+ * @return any
+ */
 Method Maybe( xDef, _ ) Class Nothing
   Return xDef
 
-Method ToList()
+/**
+ * Returns an empty list when given `Nothing` or a singleton list when not
+ * given `Nothing`.
+ * @return Array<any>
+ */
+Method ToList() Class Nothing
   Return { }
-
-// Just
-Class Just
-  Data xValue
-
-  Method New( xVal ) Constructor
-  Method Bind( bFunc )
-  Method FromJust()
-  Method FromMaybe( xDef )
-  Method IsJust()
-  Method IsNothing()
-  Method Maybe( xDef, bFunc )
-  Method ToList()
-EndClass
-
-Method New( xVal ) Class Just
-  ::xValue := xVal
-
-Method Bind( bFunc ) Class Just
-  Return Maybe:New( Eval( bFunc, ::xValue ) )
-
-Method FromJust() Class Just
-  Return ::xValue
-
-Method FromMaybe( _ ) Class Just
-  Return ::xValue
-
-Method IsJust() Class Just
-  Return .T.
-
-Method IsNothing() Class Just
-  Return .F.
-
-Method Maybe( _, bFunc ) Class Just
-  Return Eval( bFunc, ::xValue )
-
-Method ToList() Class Just
-  Return { ::xValue }
-
-#include "protheus.ch"
 
 /**
  * Implements FIFO concept (first-in, first-out). The first element to enter
@@ -395,8 +518,6 @@ Method Peek() Class Queue
     xRet := ::aValue[ 1 ]
   EndIf
   Return xRet
-
-#include "prelude.ch"
 
 /**
  * Implements LIFO concept (last-in, first-out), where the first item to enter

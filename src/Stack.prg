@@ -1,5 +1,3 @@
-#include "prelude.ch"
-
 /**
  * Implements LIFO concept (last-in, first-out), where the first item to enter
  * is the last item to leave.

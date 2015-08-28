@@ -1,5 +1,3 @@
-#include "protheus.ch"
-
 /**
  * An optimized structure for linear array access to replace the native array
  * of AdvPL.

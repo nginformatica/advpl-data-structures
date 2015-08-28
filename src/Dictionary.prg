@@ -1,5 +1,3 @@
-#include "protheus.ch"
-
 /**
  * A Dictionary has a linear complexity and is an optimized structure with no
  * visible cost on access of its elements.

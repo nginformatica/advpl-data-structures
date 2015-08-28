@@ -1,5 +1,3 @@
-#include "protheus.ch"
-
 /**
  * Implements FIFO concept (first-in, first-out). The first element to enter
  * the queue is the first element to leave it.

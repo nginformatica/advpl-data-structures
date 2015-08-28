@@ -1,10 +1,21 @@
-#include "protheus.ch"
-
-// Maybe
+/**
+ * Maybe monad implemenation. Takes a value and is able to return Just _ or
+ * Nothing.
+ * @package DataStructures
+ */
 Class Maybe
   Method New( xVal ) Constructor
 EndClass
 
+/**
+ * Receives a value. If the value is nil, returns Nothing. Otherwise, returns
+ * the value wrapped by a Just container. When it receives an instance of an
+ * object of the same class, returns itself.
+ * @constructor
+ * @author Marcelo Camargo
+ * @param xVal :: any
+ * @return Just _ | Nothing
+ */
 Method New( xVal ) Class Maybe
   Local cType := ValType( xVal )
   Local oRet
@@ -17,78 +28,3 @@ Method New( xVal ) Class Maybe
     oRet := Just():New( xVal )
   EndIf
   Return oRet
-
-// Nothing
-Class Nothing
-  Method New() Constructor
-  Method Bind( bFunc )
-  Method FromJust()
-  Method FromMaybe( xDef )
-  Method IsJust()
-  Method IsNothing()
-  Method Maybe( xDef, bFunc )
-  Method ToList()
-EndClass
-
-Method New() Class Nothing
-  Return Self
-
-Method Bind( _ ) Class Nothing
-  Return Self
-
-Method FromJust() Class Nothing
-  UserException( "Cannot call FromJust() on Nothing" )
-  Return Nil
-
-Method FromMaybe( xDef ) Class Nothing
-  Return xDef
-
-Method IsJust() Class Nothing
-  Return .F.
-
-Method IsNothing() Class Nothing
-  Return .T.
-
-Method Maybe( xDef, _ ) Class Nothing
-  Return xDef
-
-Method ToList()
-  Return { }
-
-// Just
-Class Just
-  Data xValue
-
-  Method New( xVal ) Constructor
-  Method Bind( bFunc )
-  Method FromJust()
-  Method FromMaybe( xDef )
-  Method IsJust()
-  Method IsNothing()
-  Method Maybe( xDef, bFunc )
-  Method ToList()
-EndClass
-
-Method New( xVal ) Class Just
-  ::xValue := xVal
-
-Method Bind( bFunc ) Class Just
-  Return Maybe:New( Eval( bFunc, ::xValue ) )
-
-Method FromJust() Class Just
-  Return ::xValue
-
-Method FromMaybe( _ ) Class Just
-  Return ::xValue
-
-Method IsJust() Class Just
-  Return .T.
-
-Method IsNothing() Class Just
-  Return .F.
-
-Method Maybe( _, bFunc ) Class Just
-  Return Eval( bFunc, ::xValue )
-
-Method ToList() Class Just
-  Return { ::xValue }

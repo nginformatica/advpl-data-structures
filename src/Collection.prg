@@ -1,5 +1,3 @@
-#include "protheus.ch"
-
 /**
  * Base class for all collections that hold a value. In AdvPL, a protected
  * member, this is, a member defined in the parent class is not visible by
