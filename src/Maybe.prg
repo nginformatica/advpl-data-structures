@@ -1,5 +1,4 @@
 #include "protheus.ch"
-#xtranslate \<<obj>\> => <obj>():New
 
 // Maybe
 Class Maybe
