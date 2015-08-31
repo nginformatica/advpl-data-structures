@@ -10,7 +10,7 @@ Class String
 
   Method New( cStr ) Constructor
   Method ToPrimitive()
-  Method Trim()
+  Method AllTrim()
 //Method ToAscii()
 //Method ANSIToOem()
 //Method Find()
@@ -39,7 +39,7 @@ Method ToPrimitive() Class String
  * @author Marcelo Camargo
  * @return String
  */
-Method Trim() Class String
+Method AllTrim() Class String
   Return <String>( AllTrim( ::cValue ) )
 
 /**
