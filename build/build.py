@@ -22,6 +22,8 @@
 
 from os import listdir, remove
 from os.path import isfile, join
+from sys import argv
+import re
 
 src = "./src"
 dist = "./dist"
@@ -39,7 +41,7 @@ def license():
   """
     Returns the license based on the license file
   """
-  mit = map(lambda line: "// " + line, open("LICENSE").read().split("\n")[:-2])
+  mit = map(lambda line: "// " + line, open("LICENSE").read().split("\n"))
   return "\n".join(mit)
 
 def list_files():
@@ -48,7 +50,7 @@ def list_files():
   """
   return [f for f in listdir(src) if isfile(join(src, f))]
 
-def build():
+def build(args):
   """
     Merges all the files into one single
   """
@@ -56,6 +58,8 @@ def build():
   for struct in list_files():
     with open(src + "/" + struct) as f:
       data.append(f.read())
+  if "-m" in args:
+    data = minify(data)
   gen_dist("\n".join(data))
 
 def gen_dist(data):
@@ -68,4 +72,15 @@ def gen_dist(data):
   target = open(dist + "/DataStructures.prw", "w")
   target.write(data)
 
-build()
+def minify(source):
+  """
+    Removes comments from the source code
+  """
+  multiline = re.compile("(/\*.*?\*/)", re.DOTALL)
+  singleline = re.compile("//.*?\n")
+  remove_multiline = lambda f: re.sub(multiline, "", f)
+  remove_singleline = lambda f: re.sub(singleline, "", f)
+
+  return map(remove_multiline, map(remove_singleline, source))
+
+build(argv)
