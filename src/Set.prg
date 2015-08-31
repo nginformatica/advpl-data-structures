@@ -10,7 +10,9 @@ Class Set
   Method Null()
   Method Size()
   Method Member( xElem )
+  Method NotMember( xElem )
   Method Insert( xElem )
+  Method Delete( xElem )
 EndClass
 
 /**
