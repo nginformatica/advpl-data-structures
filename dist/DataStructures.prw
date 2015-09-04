@@ -50,6 +50,7 @@ Class Dictionary
   Method Get( cKey )
   Method Unset( cKey )
   Method Dispose()
+  Method ContainsKey( cKey )
 EndClass
 
 /**
@@ -108,6 +109,14 @@ Method Unset( cKey ) Class Dictionary
  */
 Method Dispose() Class Dictionary
   Return ::oValue:Clean()
+
+/**
+ * Does the dictionary contain this key?
+ * @author Marcelo Camargo
+ * @return bool
+ */
+Method ContainsKey( cKey )
+  Return ::oValue:Get( cKey )
 
 /**
  * Algebraic representation of a wrapped value.
